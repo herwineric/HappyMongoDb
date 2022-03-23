@@ -8,10 +8,16 @@
         <PackageId>HappyMongoDb</PackageId>
         <Version>0.1.0</Version>
         <Authors>Eric Herwin</Authors>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <PackageProjectUrl>https://github.com/herwineric/HappyMongoDb</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/herwineric/HappyMongoDb</RepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="MongoDB.Driver" Version="2.15.0" />
     </ItemGroup>
 
+    <ItemGroup>
+        <None Include="LICENSE" Pack="true" PackagePath=""/>
+    </ItemGroup>
 </Project>

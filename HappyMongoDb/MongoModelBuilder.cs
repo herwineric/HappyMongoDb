@@ -5,16 +5,16 @@ namespace HappyMongoDb;
 
 public sealed class MongoModelBuilder : IMongoModelBuilder
 {
-    public MongoModelBuilder(IMongoDbContext client)
+    private readonly IMongoDatabase _database;
+
+    public MongoModelBuilder(IMongoDatabase database)
     {
+        _database = database;
         Maps = new Dictionary<Type, string>();
-        Client = client;
     }
 
     private Dictionary<Type, string> Maps { get; }
-
-    private IMongoDbContext Client { get; }
-
+    
     //TODO: Add support for document validation. FluentValidation?
     public void MapEntity<TEntity>(string collection)
         where TEntity : IEntityModel, new()
@@ -33,7 +33,7 @@ public sealed class MongoModelBuilder : IMongoModelBuilder
 
         collectionName = collection!;
 
-        return Client.Database.GetCollection<TEntity>(collection);
+        return _database.GetCollection<TEntity>(collection);
     }
 
     private void CheckIfCollectionAlreadyRegistered(string collection)
