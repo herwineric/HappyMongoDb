@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\HappyMongoDb\HappyMongoDb.csproj" />
+      <ProjectReference Include="..\MongoR\MongoR.csproj" />
     </ItemGroup>
 
 </Project>

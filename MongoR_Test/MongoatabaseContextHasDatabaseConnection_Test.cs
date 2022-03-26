@@ -1,13 +1,13 @@
-﻿using HappyMongoDb;
-using HappyMongoDb.Interfaces;
-using HappyMongoDb.Models;
-using HappyMongoDbTest.Entities;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
+using MongoR;
+using MongoR.Interfaces;
+using MongoR.Models;
+using MongoR_Test.Entities;
 using Xunit;
 
-namespace HappyMongoDbTest;
+namespace MongoR_Test;
 
-public class MongoatabaseContextHasDatabaseConnection_Test : MongoDatabaseContextRegistry
+public class MongoatabaseContextHasDatabaseConnectionTest : MongoDatabaseContextRegistry
 {
     private const string ConnString = "mongodb://mongodb0.example.com:27017";
     private const string DbName = "DbName";
@@ -27,12 +27,26 @@ public class MongoatabaseContextHasDatabaseConnection_Test : MongoDatabaseContex
     }
 
     [Fact]
-    public void OnConfigure_HasDbConnection_Test()
+    public void OnConfigure_HasDbConnection_DefaultMode_Test()
     {
         Assert.True(DatabaseConfiguration.DatabaseMode == default);
-        Assert.Equal(ConnString, DatabaseConfiguration.ConnectionString);
-        Assert.Equal(DbName, DatabaseConfiguration.DatabaseName);
+    }
 
+    [Fact]
+    public void OnConfigure_HasDbConnection_ConnectionString_Test()
+    {
+        Assert.Equal(ConnString, DatabaseConfiguration.ConnectionString);
+    }
+
+    [Fact]
+    public void OnConfigure_HasDbConnection_DatabaseName_Test()
+    {
+        Assert.Equal(DbName, DatabaseConfiguration.DatabaseName);
+    }
+
+    [Fact]
+    public void OnConfigure_HasDbConnection_MockDatabaseEntityCollection_Test()
+    {
         var collection = GetRegisteredCollection<MockDatabaseEntity>(out string colName);
         Assert.IsAssignableFrom<IMongoCollection<MockDatabaseEntity>>(collection);
         Assert.Equal(CollectionNametest, colName);
