@@ -4,7 +4,7 @@ using MongoR.Interfaces;
 
 namespace MongoR.Models
 {
-    public record BaseEntityModel : IEntityModel
+    public record BaseEntityModel 
     {
         [BsonId]
         public ObjectId Id { get; set; }

@@ -6,9 +6,9 @@ using MongoR.Interfaces;
 namespace MongoR;
 
 public class MongoRepositoryContext<TEntity> : MongoDatabaseContext, IMongoRepositoryContext<TEntity>
-    where TEntity : IEntityModel, new()
+    where TEntity : new()
 {
-    protected MongoRepositoryContext(IMongoDbContext context)
+    public MongoRepositoryContext(IMongoDbContext context)
         : base(context)
     {
         Collection = context.GetRegisteredCollection<TEntity>(out string collection);
@@ -17,7 +17,7 @@ public class MongoRepositoryContext<TEntity> : MongoDatabaseContext, IMongoRepos
         DatabaseName = context.DatabaseName;
     }
 
-    protected IMongoCollection<TEntity> Collection { get; }
+    public IMongoCollection<TEntity> Collection { get; }
 
     public string CollectionName { get; }
 

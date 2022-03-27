@@ -9,5 +9,5 @@ public interface IMongoDbContext
     public string DatabaseName { get; }
 
     public IMongoCollection<TEntity> GetRegisteredCollection<TEntity>(out string collectionName)
-        where TEntity : IEntityModel, new();
+        where TEntity : new();
 }

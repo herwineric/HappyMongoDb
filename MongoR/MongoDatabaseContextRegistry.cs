@@ -1,4 +1,5 @@
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using MongoR.Interfaces;
 using MongoR.Models;
@@ -8,11 +9,22 @@ namespace MongoR;
 
 public abstract class MongoDatabaseContextRegistry : IMongoDbContext
 {
+    private readonly IServiceCollection? _serviceCollection;
+    private readonly ServiceLifetime _globalRepositoryServiceLifetime;
+
     protected MongoDatabaseContextRegistry()
     {
         ManageSettings();
     }
 
+    protected MongoDatabaseContextRegistry(MongoRDiContainerSettings containerSettings)
+    {
+        _serviceCollection = containerSettings.ServiceCollection;
+        _globalRepositoryServiceLifetime = containerSettings.Lifetime;
+
+        ManageSettings();
+    }
+    
     private MongoDbCertificateSettings? CertificateSettings => DatabaseConfiguration.CertificateSettings;
 
     private string ConnectionString => DatabaseConfiguration.ConnectionString!;
@@ -28,7 +40,7 @@ public abstract class MongoDatabaseContextRegistry : IMongoDbContext
     public IMongoDatabase Database { get; private set; }
 
     public IMongoCollection<TEntity> GetRegisteredCollection<TEntity>(out string collectionName)
-        where TEntity : IEntityModel, new() =>
+        where TEntity : new() =>
         Builder.MongoCollection<TEntity>(out collectionName);
 
     private void ManageSettings()
@@ -55,7 +67,7 @@ public abstract class MongoDatabaseContextRegistry : IMongoDbContext
             Database = Mongo.GetDatabase(DatabaseName);
         }
 
-        Builder = new MongoModelBuilder(Database);
+        Builder = new MongoModelBuilder(Database, _serviceCollection, _globalRepositoryServiceLifetime);
         ModelBuilder(Builder);
     }
 

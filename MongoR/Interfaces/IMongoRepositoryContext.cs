@@ -5,6 +5,12 @@ namespace MongoR.Interfaces
 {
     public interface IMongoRepositoryContext<TEntity>
     {
+        public IMongoCollection<TEntity> Collection { get; }
+
+        public string CollectionName { get; }
+
+        public string DatabaseName { get; }
+        
         public Task<IEnumerable<TEntity>> GetAsync();
 
         public Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> exp);
