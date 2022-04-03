@@ -17,12 +17,12 @@ public abstract class MongoDatabaseContextRegistry : IMongoDbContext
         ManageSettings();
     }
 
-    protected MongoDatabaseContextRegistry(MongoRDiContainerSettings containerSettings)
+    protected MongoDatabaseContextRegistry(IMongoRContainerSettings containerSettings)
     {
         _serviceCollection = containerSettings.ServiceCollection;
         _globalRepositoryServiceLifetime = containerSettings.Lifetime;
 
-        ManageSettings();
+        ManageSettings(containerSettings.DbConnectionString);
     }
     
     private MongoDbCertificateSettings? CertificateSettings => DatabaseConfiguration.CertificateSettings;
@@ -43,9 +43,12 @@ public abstract class MongoDatabaseContextRegistry : IMongoDbContext
         where TEntity : new() =>
         Builder.MongoCollection<TEntity>(out collectionName);
 
-    private void ManageSettings()
+    private void ManageSettings(string? connectionString = null)
     {
-        var config = new MongoDatabaseConfiguration();
+        var config = new MongoDatabaseConfiguration
+        {
+            ConnectionString = connectionString
+        };
         OnConfigure(config);
 
         if (config.DatabaseMode == DatabaseMode.UseDatabaseConnection)

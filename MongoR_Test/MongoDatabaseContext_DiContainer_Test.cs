@@ -28,7 +28,6 @@ public class MongoDatabaseContextDiContainerTestObject : MongoDatabaseContextReg
 
     protected override void OnConfigure(MongoDatabaseConfiguration configuration)
     {
-        configuration.ConnectionString = ConnString;
         configuration.DatabaseName = DbName;
 
         base.OnConfigure(configuration);
@@ -43,7 +42,8 @@ public class MongoDatabaseContext_DiContainer_Test
     {
         var services = new ServiceCollection();
 
-        services.AddMongoRCollections<MongoDatabaseContextDiContainerTestObject>();
+        services.AddMongoRCollections<MongoDatabaseContextDiContainerTestObject>(
+            MongoDatabaseContextDiContainerTestObject.ConnString);
 
         _provider = services.BuildServiceProvider();
     }
@@ -52,7 +52,7 @@ public class MongoDatabaseContext_DiContainer_Test
     public void GetService_MongoDatabaseContextRegistry_Test()
     {
         using IServiceScope scope = _provider.CreateScope();
-        var registryContext = _provider.GetService<IMongoDbContext>();
+        var registryContext = _provider.GetRequiredService<IMongoDbContext>();
 
         var collection = registryContext.GetRegisteredCollection<MockDatabaseEntity>(out string collectionName);
 
@@ -67,6 +67,6 @@ public class MongoDatabaseContext_DiContainer_Test
         var entityContext = scope.ServiceProvider.GetService<IMongoRepositoryContext<MockDatabaseEntity>>();
 
         Assert.IsAssignableFrom<IMongoRepositoryContext<MockDatabaseEntity>>(entityContext);
-        Assert.Equal(MongoDatabaseContextDiContainerTestObject.CollectionNametest, entityContext.CollectionName);
+        Assert.Equal(MongoDatabaseContextDiContainerTestObject.CollectionNametest, entityContext!.CollectionName);
     }
 }
